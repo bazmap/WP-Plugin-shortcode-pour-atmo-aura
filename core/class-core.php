@@ -97,6 +97,9 @@ class core {
 		$this->plugin_abrv_name = $init_plugin_abrv_name;
 		$this->plugin_version = $init_plugin_version;
 
+		// Ajout des styles pour la page d'admin
+		add_action('admin_enqueue_scripts', array($this, 'enqueue_custom_admin_style'));
+
 	}
 
 
@@ -120,6 +123,29 @@ class core {
 		new functionalities($this);
 
 	}
+
+
+
+	/**
+	 * Enregistrement du style CSS
+	 *
+	 * @since     1.0.0
+	 */
+	function enqueue_custom_admin_style( $hook ) {
+
+		// Uniquement sur la page de paramètre du plugin
+		if ( $hook === 'settings_page_spaa_general' ) {
+			wp_register_style( 
+				'spaa_admin_css', 
+				plugin_dir_url( dirname( __FILE__ ) ) . 'css/admin_style.css', 
+				false, 
+				'1.0.0' 
+			);
+
+			wp_enqueue_style( 'spaa_admin_css' );
+		}
+	}
+
 
 
 

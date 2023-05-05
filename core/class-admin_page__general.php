@@ -88,7 +88,7 @@ class admin_page__general {
 	 */
 	public function init_page() {
 
-		add_submenu_page(
+		$page_option = add_submenu_page(
 			"options-general.php",                                                   // Page parente (dans le menu)
 			$this->page_name,                                                        // Titre de la page
 			$this->parent_object->parent_object->get_plugin_name(),                  // Titre du menu
@@ -97,6 +97,9 @@ class admin_page__general {
 			array($this, 'display_page'),                                            // Fonction callback d'affichage
 			10                                                                       // Priorité/position.
 		);
+
+		// Ajout d'une aide
+		add_action( 'load-' . $page_option, array($this, 'display_help') );
 
 	}
 
@@ -126,6 +129,116 @@ class admin_page__general {
 				</form>
 			</div>
 		<?php
+	}
+
+
+
+	/**
+	 * Ajout d'une aide pour la page
+	 *
+	 * @since    1.0.0
+	 * @access   public
+	 */
+	function display_help() {
+
+		// Récupération de la page courante
+		$screen = get_current_screen();
+
+		// Ajout de l'onglet d'aide
+		$screen->add_help_tab(
+			array(
+				'id' => $this->page_slug.'_help',
+				'title' => __( 'Aide' ),
+				'content' => 
+"<p>L'utilisation se fait simplement en plaçant le shortcode suivant : [spaa]</p>
+
+<p>Plusieurs paramètres sont disponibles afin de spécifier les données voulues :
+	<ul>
+		<li>
+			<code>indicateur</code> : \"vigilance\" ou \"indice\".
+			<ul>
+				<li>
+					<code>vigilance</code> : renvoi un bloc HTML détaillant les vigilances pollution. Les balises utilisées sont <code>&lt;p&gt;</code> s'il n'y a aucune vigilance (une simple phrase), <code>&lt;ul&gt;</code> et <code>&lt;li&gt;</code> s'il y a une ou plusieurs vigilances (liste de vigilance).
+				</li>
+				<li>
+					<code>indice</code> : defaut : indice de pollution. A utiliser avec les paramètres suivants : echeance et parametre.
+				</li>
+			</ul>
+		</li>
+		<li>
+			<code>echeance</code> : uniquement avec le paramètre indicateur=indice.
+			<ul>
+				<li>
+					<code>n</code> : defaut : valeurs de pollution pour le jour même.
+				</li>
+				<li>
+					<code>n+1</code> : valeurs de pollution pour le jour suivant.
+				</li>
+			</ul>
+		</li>
+		<li>
+			<code>parametre</code> : uniquement avec le paramètre indicateur=indice.
+			<ul>
+				<li>
+					<code>global_valeur</code> : Valeur du paramètre.
+				</li>
+				<li>
+					<code>global_indice</code> : defaut : Indice.
+				</li>
+				<li>
+					<code>global_couleur</code> : Code couleur hexadecimal.
+				</li>
+				<li>
+					<code>PM2.5</code> : Code HTML contenant les données de pollution au microparticule inférieur à 2,5 micron.
+				</li>
+				<li>
+					<code>PM10</code> : Code HTML contenant les données de pollution au microparticule inférieur à 10 micron.
+				</li>
+				<li>
+					<code>SO2</code> : Code HTML contenant les données de pollution au dioxyde de souffre.
+				</li>
+				<li>
+					<code>O3</code> : Code HTML contenant les données de pollution à l'ozone.
+				</li>
+				<li>
+					<code>NO2</code> : Code HTML contenant les donnée de pollution au dioxyde d'azote.
+				</li>
+			</ul>
+		</li>
+		<li>
+			<code>debug</code> : utilisé sans valeur, les données bruttes sont renvoyées. Ce paramètre prime sur tous les autres.
+		</li>
+	</ul>
+</p>
+
+<p>Voici quelques exemples d'utilisation du shortcode :
+<ul>
+	<li>
+		<code>[spaa]</code><br>
+		=> equivalent à <code>[spaa indicateur=\"indice\" echeance=\"n\" parametre=\"global_indice\"]</code>
+	</li>
+
+	<li>
+		<code>[spaa echeance=\"n+1\" parametre=\"PM2.5\"]</code><br>
+		=>equivalent à <code>[spaa indicateur=\"indice\" echeance=\"n+1\" parametre=\"PM2.5\"]</code>
+	</li>
+
+	<li>
+		<code>[spaa echeance=\"n+1\" parametre=\"PM2.5\" debug]</code><br>
+		=>equivalent à <code>[spaa debug]</code> (<code>debug</code> prime sur tout autre paramètre).
+	</li>
+
+	<li>
+		<code>[spaa indicateur=\"vigilance\"]</code>
+	</li>
+</ul>
+</p>
+"
+			)
+		);
+
+		// Ajout d'une sidebar supplémentaire
+		//$screen->set_help_sidebar( __( 'Hello Dolly' ) );
 	}
 
 
