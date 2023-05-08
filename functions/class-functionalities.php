@@ -3,7 +3,8 @@
 // Espace de nom du plugin
 namespace plugin_spaa;
 
-
+use DateTime;
+use YoastSEO_Vendor\WordProof\SDK\Support\Timestamp;
 
 /**
  * class-functions
@@ -172,7 +173,12 @@ class functionalities {
 				$data_return = $data['indice'][$attribut['echeance']]['recommandation'];
 			}
 			else if ( $attribut['indicateur'] == 'horodatage' ){
-				$data_return = date("Y-m-d H:i:s", $data['timestamp_data']);
+
+				$date = new \DateTime();
+				$date->setTimestamp($data['timestamp_data']);
+				$date->setTimezone(new \DateTimeZone(wp_timezone_string()));
+
+				$data_return = $date->format("Y-m-d H:i:s");
 			}
 			else {
 				throw new \Exception('Mauvais paramètre');
@@ -462,7 +468,7 @@ class functionalities {
 			$data_return[$echeance]['global']['abbreviation'] = null;
 			$data_return[$echeance]['global']['indice num'] = $elem['indice'];
 			$data_return[$echeance]['global']['indice txt'] = $this->data_definition[$elem['indice']]['qualificatif'];
-			$data_return[$echeance]['global']['valeur'] = null;
+			$data_return[$echeance]['global']['concentration'] = null;
 			$data_return[$echeance]['global']['image'] = '<img src="'.$this->data_definition[$elem['indice']]['picto_url'].'">';
 			$data_return[$echeance]['global']['gauge'] = $this->format_data_indice_gauge($data_return[$echeance]['global']);
 			$data_return[$echeance]['global']['widget'] = $this->format_data_indice_widget($data_return[$echeance]['global']);
