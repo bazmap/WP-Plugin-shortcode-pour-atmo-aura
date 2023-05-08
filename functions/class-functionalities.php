@@ -247,8 +247,9 @@ class functionalities {
 			$atmo_data = $this->get_api_data($api_key, $code_insee);
 
 			// Mise en forme des données
+			$data['definition'] = $this->format_data_definition($atmo_data['definition']);
 			$data['vigilance'] = $this->format_data_vigilance($atmo_data['vigilance']);
-			$data['indice'] = $this->format_data_indice($atmo_data['indice']);
+			$data['indice'] = $this->format_data_indice($atmo_data['indice'], $data['definition']);
 
 			// Assignation d'un timestamp
 			$data['timestamp_data'] = $current_timestamp->getTimestamp();
@@ -276,6 +277,13 @@ class functionalities {
 
 		// APIs
 		$api = [
+			'definition' => [
+				'url' => "http://api.atmo-aura.fr/api/v1/indices/definitions/definitions?api_token={$api_key}",
+				'parameter' => [
+					'method' => 'GET',
+					'timeout' => 30
+				]
+			],
 			'indice' => [
 				'url' => "http://api.atmo-aura.fr/api/v1/communes/{$code_insee}/indices/atmo?api_token={$api_key}&date_debut_echeance=now",
 				'parameter' => [
@@ -289,7 +297,7 @@ class functionalities {
 					'method' => 'GET',
 					'timeout' => 30
 				]
-			],
+			]
 		];
 
 		// Récupération des données
@@ -323,6 +331,63 @@ class functionalities {
 
 
 	/**
+	 * Formatage des données de définition
+	 *
+	 * @since     1.0.0
+	 * @param     array     $data     Tableau de données
+	 * @return    array     Un tableau de données
+	 */
+	public function format_data_definition($data){
+
+		$data_return['debug'] = $data;
+
+
+		foreach ($data['data'] as $elem){
+
+			// Récupération de l'indice
+			$indice = $elem['indice'];
+
+			// Retrait de la clé
+			unset($elem['indice']);
+
+			// Récupération des données
+			$data_return[$indice] = $elem;
+
+
+			// Recommandations
+			$data_return[$indice]['recommandation'] = '<div class="indice_reco">';
+
+			foreach ($elem['recommandations'] as $reco){
+
+				$data_return[$indice]['recommandation'] .= 
+					'<div class="elem_reco">'.
+					'  <div class="reco_img">'.
+					'    <img src="'.$reco['picto_url'].'">'.
+					'  </div>'.
+					'  <div class="reco_info">'.
+					'    <span class="reco_title">'.
+					       $reco['categorie'].
+					'    </span>'.
+					'    <span class="reco_texte">'.
+					       $reco['texte'].
+					'    </span>'.
+					'  </div>'.
+					'</div>'
+				;
+
+			}
+
+			$data_return[$indice]['recommandation'] .= '</div>';
+		}
+
+
+		return $data_return;
+
+	}
+
+
+
+	/**
 	 * Formatage des données de vigilance
 	 *
 	 * @since     1.0.0
@@ -344,14 +409,16 @@ class functionalities {
 			$data_return = '<ul>';
 
 			foreach ($data['data']['vigilances'] as $key){
-				$data_return .= '<li class="vigi_niveau_'.$data['data']['vigilances'][$key]['niveau'].'">';
-				$data_return .= '<span class="vigi_title">'.$data['data']['vigilances'][$key]['nom_procedure'].'</span><br/>';
-				$data_return .= '<span class="vigi_date">Du '.$data['data']['vigilances'][$key]['date_debut'].' au '.$data['data']['vigilances'][$key]['date_fin'].'</span><br/>';
-				$data_return .= '<span class="vigi_zone">Zone '.$data['data']['vigilances'][$key]['zone'].'</span><br/>';
-				$data_return .= '<span class="vigi_polluant">Polluant '.$data['data']['vigilances'][$key]['polluant'].'</span><br/>';
-				$data_return .= '<span class="vigi_niveau">Niveau '.$data['data']['vigilances'][$key]['niveau'].'</span><br/>';
-				$data_return .= '<span class="vigi_commentaire">'.$data['data']['vigilances'][$key]['commentaire'].'</span>';
-				$data_return .= '</li>';
+				$data_return .= 
+					'<li class="vigi_niveau_'.$data['data']['vigilances'][$key]['niveau'].'">'.
+					'<span class="vigi_title">'.$data['data']['vigilances'][$key]['nom_procedure'].'</span><br/>'.
+					'<span class="vigi_date">Du '.$data['data']['vigilances'][$key]['date_debut'].' au '.$data['data']['vigilances'][$key]['date_fin'].'</span><br/>'.
+					'<span class="vigi_zone">Zone '.$data['data']['vigilances'][$key]['zone'].'</span><br/>'.
+					'<span class="vigi_polluant">Polluant '.$data['data']['vigilances'][$key]['polluant'].'</span><br/>'.
+					'<span class="vigi_niveau">Niveau '.$data['data']['vigilances'][$key]['niveau'].'</span><br/>'.
+					'<span class="vigi_commentaire">'.$data['data']['vigilances'][$key]['commentaire'].'</span>'.
+					'</li>'
+				;
 
 			}
 
@@ -371,7 +438,7 @@ class functionalities {
 	 * @param     array     $data     Tableau de données
 	 * @return    array     Un tableau de données
 	 */
-	public function format_data_indice($data){
+	public function format_data_indice($data, $definition){
 
 		$data_return['debug'] = $data;
 
@@ -390,20 +457,22 @@ class functionalities {
 
 			// Définition de l'indice
 			if ($key == 0){
-				$indice = 'n';
+				$echeance = 'n';
 			}
 			else{
-				$indice = 'n+'.$key;
+				$echeance = 'n+'.$key;
 			}
 
 
 			// Valeurs globales
-			$data_return[$indice]['global_valeur'] = $elem['indice'];
-			$data_return[$indice]['global_indice'] = $elem['qualificatif'];
-			$data_return[$indice]['global_couleur'] = $elem['couleur_html'];
+			$data_return[$echeance]['global_valeur'] = $elem['indice'];
+			$data_return[$echeance]['global_indice'] = $elem['qualificatif'];
+			$data_return[$echeance]['global_couleur'] = $elem['couleur_html'];
+			$data_return[$echeance]['global_picto'] = '<img src="'.$definition[$elem['indice']]['picto_url'].'">';
+			$data_return[$echeance]['global_recommandation'] = $definition[$elem['indice']]['recommandation'];
 
 
-			// Indice par polluant
+			// Sous-indice par polluant
 			foreach ($elem['sous_indices'] as $ss_indice){
 				$polluant = $ss_indice['polluant_nom'];
 				switch ($polluant):
@@ -427,16 +496,19 @@ class functionalities {
 				endswitch;
 
 				$concentration = $ss_indice['concentration'];
-				$indice_polluant = $ss_indice['indice'];
+				$indice_polluant_fr = $definition[$ss_indice['indice']]['qualificatif'];
+				$indice_img = '<img src="'.$definition[$ss_indice['indice']]['picto_url'].'">';
 
-				$data_return[$indice][$polluant]  = '<span class="polluant indice_'.$indice_polluant.'">';
-				$data_return[$indice][$polluant] .= '<span class="pollu_title">'.$polluant_fr.'</span>';
-				$data_return[$indice][$polluant] .= ' (<span class="pollu_molecule">'.$polluant.'</span>)';
-				$data_return[$indice][$polluant] .= '<span class="pollu_info indice_'.$indice_polluant.'">';
-				$data_return[$indice][$polluant] .= '	<span class="pollu_indice">'.$indice_polluant.'</span>';
-				$data_return[$indice][$polluant] .= '	<span class="pollu_concentration">'.$concentration.'</span>';
-				$data_return[$indice][$polluant] .= '</span>';
-				$data_return[$indice][$polluant] .= '</span>';
+				$data_return[$echeance][$polluant]  =
+					"<div class=\"polluant indice_{$ss_indice['indice']}\">
+						<span class=\"pollu_title\">{$polluant_fr}</span>
+						<span class=\"pollu_molecule\">({$polluant})</span>
+						{$indice_img}
+						<span class=\"pollu_indice\">{$indice_polluant_fr}</span>
+						<span class=\"pollu_concentration\">({$concentration} µg/m3)</span>
+					</div>"
+				;
+
 			}
 		}
 
