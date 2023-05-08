@@ -12,32 +12,46 @@ L'utilisation se fait simplement en plaçant le shortcode suivant :
 
 Plusieurs paramètres sont disponibles afin de spécifier les données voulues :
 - `indicateur` : "vigilance" ou "indice".
+  - `horodatage` : Heure de récupération des données.
   - `vigilance` : renvoi un bloc HTML détaillant les vigilances pollution. Les balises utilisées sont `<p>` s'il n'y a aucune vigilance, `<ul>` s'il y a une ou plusieurs vigilances.
-  - `indice` : defaut : indice de pollution. A utiliser avec les paramètres suivants : `echeance` et `parametre`.
+  - `recommandation` : renvoi un bloc HTML détaillant les recommandations en fonction de l'indice global actuel.
+  - `indice` : defaut : indice de pollution. A utiliser avec les paramètres suivants : `echeance`, `polluant` et `parametre`.
 - `echeance` : uniquement avec le paramètre `indicateur=indice`.
   - `n` : defaut : valeurs de pollution pour le jour même.
   - `n+1` : valeurs de pollution pour le jour suivant.
+- `polluant` : polluant pour lequel afficher les données, uniquement avec le paramètre `indicateur=indice`.
+  - `global` : etat global de l'air.
+  - `PM2.5` : Microparticule inférieur à 2,5 micron.
+  - `PM10` : Microparticule inférieur à 10 micron.
+  - `SO2` : Dioxyde de souffre.
+  - `O3` : Ozone.
+  - `NO2` : Dioxyde d'azote.
 - `parametre` : uniquement avec le paramètre `indicateur=indice`.
-  - `global_valeur` : Valeur du paramètre.
-  - `global_indice` : defaut : Indice.
-  - `global_couleur` : Code couleur hexadecimal.
-  - `PM2.5` : Code HTML contenant les données de pollution au microparticule inférieur à 2,5 micron.
-  - `PM10` : Code HTML contenant les données de pollution au microparticule inférieur à 10 micron.
-  - `SO2` : Code HTML contenant les données de pollution au dioxyde de souffre.
-  - `O3` : Code HTML contenant les données de pollution à l'ozone.
-  - `NO2` : Code HTML contenant les donnée de pollution au dioxyde d'azote.
+  - `nom` : nom du polluant (par exemple "Ozone").
+  - `abbreviation` : abbreviation (par exemple "03").
+  - `indice num` : indice numérique (par exemple "3").
+  - `indice txt` : indice textuel (par exemple "Mauvais").
+  - `concentration` : valeur de concentration absolue.
+  - `image` : icône colorée représentant l'indice.
+  - `widget` : code HTML contenant un ensemble d'informations sur le polluant et l'indice lié.
+  - `gauge` : code HTML contenant une gauge indicant le niveau d'indice pour le polluant considéré.
+
 - `debug` : utilisé sans valeur, les données bruttes sont renvoyées. Ce paramètre prime sur tous les autres.
 
 Voici quelques exemples d'utilisation du shortcode :  
 ```[spaa]```  
-=> equivalent à ```[spaa indicateur="indice" echeance="n" parametre="global_indice"]```  
+=> equivalent à ```[spaa indicateur="indice" echeance="n" polluant="global" parametre="widget"]```  
 
-```[spaa echeance="n+1" parametre="PM2.5"]```  
-=>equivalent à ```[spaa indicateur="indice" echeance="n+1" parametre="PM2.5"]```  
+```[spaa echeance="n+1" polluant="PM2.5"]```  
+=>equivalent à ```[spaa indicateur="indice" echeance="n+1" polluant="PM2.5" parametre="widget"]```  
 
-```[spaa echeance="n+1" parametre="PM2.5" debug]```  
+```[spaa echeance="n+1" polluant="PM2.5" debug]```  
 =>equivalent à ```[spaa debug]```  
 
 ```[spaa indicateur="vigilance"]```  
+
+```[spaa indicateur="horodatage"]```  
+
+```[spaa indicateur="recommandation"]```  
 
 

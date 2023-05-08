@@ -99,6 +99,7 @@ class core {
 
 		// Ajout des styles pour la page d'admin
 		add_action('admin_enqueue_scripts', array($this, 'enqueue_custom_admin_style'));
+		add_action('wp_enqueue_scripts', array($this, 'enqueue_custom_front_style'));
 
 	}
 
@@ -127,7 +128,7 @@ class core {
 
 
 	/**
-	 * Enregistrement du style CSS
+	 * Enregistrement du style CSS admin
 	 *
 	 * @since     1.0.0
 	 */
@@ -144,6 +145,25 @@ class core {
 
 			wp_enqueue_style( 'spaa_admin_css' );
 		}
+	}
+
+
+
+	/**
+	 * Enregistrement du style CSS front
+	 *
+	 * @since     1.0.0
+	 */
+	function enqueue_custom_front_style() {
+
+		wp_register_style( 
+			'spaa_front_css', 
+			plugin_dir_url( dirname( __FILE__ ) ) . 'css/front_style.css', 
+			false, 
+			'1.0.0' 
+		);
+
+		wp_enqueue_style( 'spaa_front_css' );
 	}
 
 

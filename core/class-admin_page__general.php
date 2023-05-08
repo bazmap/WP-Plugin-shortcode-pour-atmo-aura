@@ -14,6 +14,7 @@ namespace plugin_spaa;
  * Paramètres créés :
  * 	cle_api
  * 	code_insee
+ * 	delai_peremption
  *
  * Ce fichier est appelé au sein de la classe admin
  *
@@ -265,7 +266,8 @@ class admin_page__general {
 			)
 		);
 
-		// Registers a text field example
+
+		// Ajout d'un paramètre
 		add_settings_field( 
 			'setting_'.($this->page_slug).'_setting_cle_api',              // ID du champ
 			'Clé d\'API',                                                  // Titre
@@ -273,11 +275,12 @@ class admin_page__general {
 			$this->page_slug,                                              // Page
 			'setting_'.($this->page_slug).'_section_parametre',            // Section
 			//array( 
-			//	'label_for' => 'settings_boilerplate_text_field',          // Id for the input and label element.
+			//	'label_for' => '',                                         // Id for the input and label element.
 			//)
 		);
 
-		// Registers a text field example
+
+		// Ajout d'un paramètre
 		add_settings_field( 
 			'setting_'.($this->page_slug).'_setting_code_insee',          // ID du champ
 			'Code INSEE de la commune',                                   // Titre
@@ -285,7 +288,20 @@ class admin_page__general {
 			$this->page_slug,                                              // Page
 			'setting_'.($this->page_slug).'_section_parametre',            // Section
 			//array( 
-			//	'label_for' => 'settings_boilerplate_text_field',          // Id for the input and label element.
+			//	'label_for' => '',                                         // Id for the input and label element.
+			//)
+		);
+
+
+		// Ajout d'un paramètre
+		add_settings_field( 
+			'setting_'.($this->page_slug).'_setting_delai_peremption',          // ID du champ
+			'Délais de péremption des données (en seconde)',                                   // Titre
+			array($this, 'display_setting_delai_peremption'),                                 // Fonction callback
+			$this->page_slug,                                              // Page
+			'setting_'.($this->page_slug).'_section_parametre',            // Section
+			//array( 
+			//	'label_for' => '',                                         // Id for the input and label element.
 			//)
 		);
 
@@ -294,8 +310,6 @@ class admin_page__general {
 
 	/**
 	 * Affichage d'un champ 
-	 * Voir pour faire un id général dans une variable ?
-	 * Voir pour faire une fonction standard pour la première partie de display_s1_c1
 	 * 
 	 * @since    1.0.0
 	 * @access   public
@@ -319,8 +333,6 @@ class admin_page__general {
 
 	/**
 	 * Affichage d'un champ 
-	 * Voir pour faire un id général dans une variable ?
-	 * Voir pour faire une fonction standard pour la première partie de display_s1_c1
 	 * 
 	 * @since    1.0.0
 	 * @access   public
@@ -338,6 +350,29 @@ class admin_page__general {
 		?>
 			<input id="<?php echo esc_attr( $label ); ?>" class="regular-text" type="text" name="<?php echo esc_attr( $setting_name.'['.$sub_setting_name.']' ); ?>" value="<?php echo esc_attr( $value ); ?>"><br/>
 			<p>Le code INSEE est composé de 5 chiffres</p>
+		<?php
+	}
+
+
+	/**
+	 * Affichage d'un champ 
+	 * 
+	 * @since    1.0.0
+	 * @access   public
+	 * @param    array  $args    Arguments récupérer depuis l'appel dans la fonction add_settings_field()
+	*/
+	public function display_setting_delai_peremption( $args ){
+
+		$setting_name = $this->parent_object->plugin_setting_name;
+		$sub_setting_name = 'delai_peremption';
+
+		$setting = get_option( $setting_name );
+		$value = ! empty( $setting[$sub_setting_name] ) ? $setting[$sub_setting_name] : '';
+		$label = ! empty( $args['label_for'] ) ? $args['label_for'] : '';
+
+		?>
+			<input id="<?php echo esc_attr( $label ); ?>" class="regular-text" type="number" name="<?php echo esc_attr( $setting_name.'['.$sub_setting_name.']' ); ?>" value="<?php echo esc_attr( $value ); ?>"><br/>
+			<p>Le délais de péremption est par défaut de 3h (10800 secondes). Au delà, l'API est recontactée pour actualiser les données.</p>
 		<?php
 	}
 

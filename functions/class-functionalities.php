@@ -73,6 +73,15 @@ class functionalities {
 	 */
 	public $code_insee;
 
+	/**
+	 * Données de définition des indices
+	 *
+	 * @since    1.0.0
+	 * @access   public
+	 * @var      string       $code_insee
+	 */
+	public $data_definition;
+
 
 
 	/**
@@ -86,11 +95,18 @@ class functionalities {
 		// Définition des variables
 		$this->parent_object = $init_parent_object;
 		$this->option_name = ($this->parent_object->get_plugin_abrv()).'_data';
-		$this->delai_peremption = 3; 	// 3 heures
+
 
 		// Récupération des paramètres du plugin
 		$this->api_key = (get_option($this->parent_object->plugin_object_admin->plugin_setting_name))['cle_api'];
 		$this->code_insee = (get_option($this->parent_object->plugin_object_admin->plugin_setting_name))['code_insee'];
+		$this->delai_peremption = 
+			isset(
+				(get_option($this->parent_object->plugin_object_admin->plugin_setting_name))['delai_peremption']
+			) ?
+			(get_option($this->parent_object->plugin_object_admin->plugin_setting_name))['delai_peremption'] :
+			( 3 * 3600 )
+		; 	// 3 heures par défaut
 
 
 		// Ajout d'un shortcode dédié
@@ -102,36 +118,6 @@ class functionalities {
 
 	/**
 	 * Shortcode d'affichage des données
-	 * Les données sont sous cette forme :
-	 * [
-	 * 	'vigilance' => 'data',
-	 * 	'indice' => [
-	 * 		'n' => [
-	 * 			'global_valeur' => 'Valeur du paramètre',
-	 * 			'global_indice' => 'Indice',
-	 * 			'global_couleur' => 'Code couleur hexadecimal',
-	 * 			'PM2.5' => 'Code HTML contenant les données',
-	 * 			'PM10' => 'Code HTML contenant les données',
-	 * 			'SO2' => 'Code HTML contenant les données',
-	 * 			'O3' => 'Code HTML contenant les données',
-	 * 			'NO2' => 'Code HTML contenant les données'
-	 * 		],
-	 * 		'n+1' => [
-	 * 			'global_valeur' => 'Valeur du paramètre',
-	 * 			'global_indice' => 'Indice',
-	 * 			'global_couleur' => 'Code couleur hexadecimal',
-	 * 			'PM2.5' => 'Code HTML contenant les données',
-	 * 			'PM10' => 'Code HTML contenant les données',
-	 * 			'SO2' => 'Code HTML contenant les données',
-	 * 			'O3' => 'Code HTML contenant les données',
-	 * 			'NO2' => 'Code HTML contenant les données'
-	 * 		]
-	 * 	]
-	 * ]
-	 * Les paramètres du shortcode sont :
-	 * 	indicateur
-	 * 	echeance
-	 * 	parametre
 	 *
 	 * @since     1.0.0
 	 * @param     array     $atts         Attributs
@@ -147,7 +133,8 @@ class functionalities {
 			array(
 				'indicateur' => 'indice',
 				'echeance' => 'n',
-				'parametre' => 'global_indice'
+				'polluant' => 'global',
+				'parametre' => 'widget'
 			), 
 			$atts
 		);
@@ -176,10 +163,16 @@ class functionalities {
 				$data_return = $data;
 			}
 			else if ( $attribut['indicateur'] == 'indice' ){
-				$data_return = $data[$attribut['indicateur']][$attribut['echeance']][$attribut['parametre']];
+				$data_return = $data['indice'][$attribut['echeance']][$attribut['polluant']][$attribut['parametre']];
 			}
 			else if ( $attribut['indicateur'] == 'vigilance' ){
-				$data_return = $data[$attribut['indicateur']][$attribut['echeance']][$attribut['parametre']];
+				$data_return = $data['vigilance'];
+			}
+			else if ( $attribut['indicateur'] == 'recommandation' ){
+				$data_return = $data['indice'][$attribut['echeance']]['recommandation'];
+			}
+			else if ( $attribut['indicateur'] == 'horodatage' ){
+				$data_return = date("Y-m-d H:i:s", $data['timestamp_data']);
 			}
 			else {
 				throw new \Exception('Mauvais paramètre');
@@ -247,9 +240,9 @@ class functionalities {
 			$atmo_data = $this->get_api_data($api_key, $code_insee);
 
 			// Mise en forme des données
-			$data['definition'] = $this->format_data_definition($atmo_data['definition']);
+			$this->data_definition = $this->format_data_definition($atmo_data['definition']);
 			$data['vigilance'] = $this->format_data_vigilance($atmo_data['vigilance']);
-			$data['indice'] = $this->format_data_indice($atmo_data['indice'], $data['definition']);
+			$data['indice'] = $this->format_data_indice($atmo_data['indice']);
 
 			// Assignation d'un timestamp
 			$data['timestamp_data'] = $current_timestamp->getTimestamp();
@@ -355,12 +348,12 @@ class functionalities {
 
 
 			// Recommandations
-			$data_return[$indice]['recommandation'] = '<div class="indice_reco">';
+			$data_return[$indice]['recommandation'] = '<div class="spaa recommandations">';
 
 			foreach ($elem['recommandations'] as $reco){
 
 				$data_return[$indice]['recommandation'] .= 
-					'<div class="elem_reco">'.
+					'<div class="recommandation">'.
 					'  <div class="reco_img">'.
 					'    <img src="'.$reco['picto_url'].'">'.
 					'  </div>'.
@@ -406,7 +399,7 @@ class functionalities {
 		}
 		else{
 
-			$data_return = '<ul>';
+			$data_return = '<ul class="spaa vigilance">';
 
 			foreach ($data['data']['vigilances'] as $key){
 				$data_return .= 
@@ -438,7 +431,7 @@ class functionalities {
 	 * @param     array     $data     Tableau de données
 	 * @return    array     Un tableau de données
 	 */
-	public function format_data_indice($data, $definition){
+	public function format_data_indice($data){
 
 		$data_return['debug'] = $data;
 
@@ -465,11 +458,16 @@ class functionalities {
 
 
 			// Valeurs globales
-			$data_return[$echeance]['global_valeur'] = $elem['indice'];
-			$data_return[$echeance]['global_indice'] = $elem['qualificatif'];
-			$data_return[$echeance]['global_couleur'] = $elem['couleur_html'];
-			$data_return[$echeance]['global_picto'] = '<img src="'.$definition[$elem['indice']]['picto_url'].'">';
-			$data_return[$echeance]['global_recommandation'] = $definition[$elem['indice']]['recommandation'];
+			$data_return[$echeance]['global']['nom'] = 'Indice global';
+			$data_return[$echeance]['global']['abbreviation'] = null;
+			$data_return[$echeance]['global']['indice num'] = $elem['indice'];
+			$data_return[$echeance]['global']['indice txt'] = $this->data_definition[$elem['indice']]['qualificatif'];
+			$data_return[$echeance]['global']['valeur'] = null;
+			$data_return[$echeance]['global']['image'] = '<img src="'.$this->data_definition[$elem['indice']]['picto_url'].'">';
+			$data_return[$echeance]['global']['gauge'] = $this->format_data_indice_gauge($data_return[$echeance]['global']);
+			$data_return[$echeance]['global']['widget'] = $this->format_data_indice_widget($data_return[$echeance]['global']);
+
+			$data_return[$echeance]['recommandation'] = $this->data_definition[$elem['indice']]['recommandation'];
 
 
 			// Sous-indice par polluant
@@ -477,10 +475,10 @@ class functionalities {
 				$polluant = $ss_indice['polluant_nom'];
 				switch ($polluant):
 					case 'PM2.5':
-						$polluant_fr = "Particules fines, diamètre < 2,5 µm";
+						$polluant_fr = "Particules fines, ⌀ < 2,5 µm";
 						break;
 					case 'PM10':
-						$polluant_fr = "Particules fines, diamètre < 10 µm";
+						$polluant_fr = "Particules fines, ⌀ < 10 µm";
 						break;
 					case 'SO2':
 						$polluant_fr = "Dioxyde de soufre";
@@ -495,19 +493,14 @@ class functionalities {
 						$polluant_fr = "";
 				endswitch;
 
-				$concentration = $ss_indice['concentration'];
-				$indice_polluant_fr = $definition[$ss_indice['indice']]['qualificatif'];
-				$indice_img = '<img src="'.$definition[$ss_indice['indice']]['picto_url'].'">';
-
-				$data_return[$echeance][$polluant]  =
-					"<div class=\"polluant indice_{$ss_indice['indice']}\">
-						<span class=\"pollu_title\">{$polluant_fr}</span>
-						<span class=\"pollu_molecule\">({$polluant})</span>
-						{$indice_img}
-						<span class=\"pollu_indice\">{$indice_polluant_fr}</span>
-						<span class=\"pollu_concentration\">({$concentration} µg/m3)</span>
-					</div>"
-				;
+				$data_return[$echeance][$polluant]['nom'] = $polluant_fr;
+				$data_return[$echeance][$polluant]['abbreviation'] = $polluant;
+				$data_return[$echeance][$polluant]['indice num'] = $ss_indice['indice'];
+				$data_return[$echeance][$polluant]['indice txt'] = $this->data_definition[$ss_indice['indice']]['qualificatif'];
+				$data_return[$echeance][$polluant]['concentration'] = $ss_indice['concentration'];
+				$data_return[$echeance][$polluant]['image'] = '<img src="'.$this->data_definition[$ss_indice['indice']]['picto_url'].'">';
+				$data_return[$echeance][$polluant]['gauge'] = $this->format_data_indice_gauge($data_return[$echeance][$polluant]);
+				$data_return[$echeance][$polluant]['widget'] = $this->format_data_indice_widget($data_return[$echeance][$polluant]);
 
 			}
 		}
@@ -515,6 +508,70 @@ class functionalities {
 
 		return $data_return;
 
+	}
+
+
+
+	/**
+	 * Formatage des données d'indice sous forme d'une gauge
+	 *
+	 * @since     1.0.0
+	 * @param     array     $data     Tableau de données
+	 * @return    string    Un code HTML représentant les données sous forme de gauge
+	 */
+	public function format_data_indice_gauge($data){
+		$data_return = 
+			"<div class=\"spaa indice_gauge\">
+				<div class=\"inner_content\">
+					<div class=\"gauge\">
+						<div class=\"cadran\">
+							<div class=\"graduation_item\"></div>
+							<div class=\"graduation_item\"></div>
+							<div class=\"graduation_item\"></div>
+							<div class=\"graduation_item\"></div>
+							<div class=\"graduation_item\"></div>
+							<div class=\"graduation_item\"></div>
+							<div class=\"cadran_centre_bord\">
+							</div>
+							<div class=\"needle\" style=\"transform: rotate(calc( -15deg + ( {$data['indice num']} * 30deg ) ))\"></div>
+							<div class=\"cadran_centre\">
+								<div class=\"gg_indice\">{$data['indice txt']}</div>
+								<div class=\"gg_concentration\">
+								". (isset( $data['concentration'] ) ? "({$data['concentration']} µg/m3)" : '') ."
+								</div>
+								<div class=\"gg_polluant\">{$data['nom']}</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>"
+		;
+
+		return $data_return;
+	}
+
+
+
+	/**
+	 * Formatage des données d'indice sous forme d'un widget
+	 *
+	 * @since     1.0.0
+	 * @param     array     $data     Tableau de données
+	 * @return    string    Un code HTML représentant les données sous forme de gauge
+	 */
+	public function format_data_indice_widget($data){
+
+		$data_return =
+			"<div class=\"spaa indice_widget indice_{$data['indice num']}\">
+				<span class=\"wgt_title\">{$data['nom']}</span>
+				". (isset( $data['concentration'] ) ? "<span class=\"wgt_molecule\">({$data['abbreviation']})</span>" : '') ."
+				{$data['image']}
+				<span class=\"wgt_indice\">{$data['indice txt']}</span>
+				". (isset( $data['concentration'] ) ? "<span class=\"wgt_concentration\">({$data['concentration']} µg/m3)</span>" : '') ."
+			</div>"
+		;
+
+		return $data_return;
 	}
 
 
