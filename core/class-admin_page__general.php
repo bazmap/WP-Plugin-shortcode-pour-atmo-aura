@@ -151,23 +151,33 @@ class admin_page__general {
 				'id' => $this->page_slug.'_help',
 				'title' => __( 'Aide' ),
 				'content' => 
+
 "<p>L'utilisation se fait simplement en plaçant le shortcode suivant : [spaa]</p>
 
 <p>Plusieurs paramètres sont disponibles afin de spécifier les données voulues :
 	<ul>
 		<li>
-			<code>indicateur</code> : \"vigilance\" ou \"indice\".
+			<code>indicateur</code> :
 			<ul>
+				<li>
+					<code>horodatage</code> : Renvoi la date et l'heure de récupération des données.
+				</li>
+				<li>
+					<code>lien</code> : Renvoi un lien vers les données de la commune dont le code INSEE est spécifiée dans les paramètres. A utiliser avec lesparamètre : <code>texte</code>.
+				</li>
 				<li>
 					<code>vigilance</code> : renvoi un bloc HTML détaillant les vigilances pollution. Les balises utilisées sont <code>&lt;p&gt;</code> s'il n'y a aucune vigilance (une simple phrase), <code>&lt;ul&gt;</code> et <code>&lt;li&gt;</code> s'il y a une ou plusieurs vigilances (liste de vigilance).
 				</li>
 				<li>
-					<code>indice</code> : defaut : indice de pollution. A utiliser avec les paramètres suivants : echeance et parametre.
+					<code>recommandation</code> : renvoi un bloc HTML détaillant les recommandations en fonction de l'indice global actuel.
+				</li>
+				<li>
+					<code>indice</code> : defaut : renvoi différentes informations sur l'état de l'atmosphère. A utiliser avec les paramètres : : <code>echeance</code>, <code>polluant</code> et <code>parametre</code>.
 				</li>
 			</ul>
 		</li>
 		<li>
-			<code>echeance</code> : uniquement avec le paramètre indicateur=indice.
+			<code>echeance</code> : uniquement avec le paramètre <code>indicateur=indice</code>.
 			<ul>
 				<li>
 					<code>n</code> : defaut : valeurs de pollution pour le jour même.
@@ -178,33 +188,59 @@ class admin_page__general {
 			</ul>
 		</li>
 		<li>
-			<code>parametre</code> : uniquement avec le paramètre indicateur=indice.
+			<code>polluant</code> : uniquement avec le paramètre <code>indicateur=indice</code>.
 			<ul>
 				<li>
-					<code>global_valeur</code> : Valeur du paramètre.
+					<code>global</code> : défaut : état global de l'air.
 				</li>
 				<li>
-					<code>global_indice</code> : defaut : Indice.
+					<code>PM2.5</code> : microparticule inférieur à 2,5 micron.
 				</li>
 				<li>
-					<code>global_couleur</code> : Code couleur hexadecimal.
+					<code>PM10</code> : microparticule inférieur à 10 micron.
 				</li>
 				<li>
-					<code>PM2.5</code> : Code HTML contenant les données de pollution au microparticule inférieur à 2,5 micron.
+					<code>SO2</code> : dioxyde de souffre.
 				</li>
 				<li>
-					<code>PM10</code> : Code HTML contenant les données de pollution au microparticule inférieur à 10 micron.
+					<code>O3</code> : ozone.
 				</li>
 				<li>
-					<code>SO2</code> : Code HTML contenant les données de pollution au dioxyde de souffre.
-				</li>
-				<li>
-					<code>O3</code> : Code HTML contenant les données de pollution à l'ozone.
-				</li>
-				<li>
-					<code>NO2</code> : Code HTML contenant les donnée de pollution au dioxyde d'azote.
+					<code>NO2</code> : dioxyde d'azote.
 				</li>
 			</ul>
+		</li>
+		<li>
+			<code>parametre</code> : uniquement avec le paramètre <code>indicateur=indice</code>.
+			<ul>
+				<li>
+					<code>nom</code> : nom du polluant (par exemple \"Ozone\").
+				</li>
+				<li>
+					<code>abbreviation</code> : abbreviation (par exemple \"03\").
+				</li>
+				<li>
+					<code>indice num</code> : indice numérique (par exemple \"3\").
+				</li>
+				<li>
+					<code>indice txt</code> : indice textuel (par exemple \"Mauvais\").
+				</li>
+				<li>
+					<code>concentration</code> : valeur de concentration absolue.
+				</li>
+				<li>
+					<code>image</code> : icône colorée représentant l'indice.
+				</li>
+				<li>
+					<code>widget</code> : defaut : code HTML contenant un ensemble d'informations sur le polluant et l'indice lié.
+				</li>
+				<li>
+					<code>gauge</code> : code HTML contenant une gauge indicant le niveau d'indice pour le polluant considéré.
+				</li>
+			</ul>
+		</li>
+		<li>
+			<code>texte</code> : uniquement avec le paramètre <code>indicateur=lien</code>. Texte à afficher dans le lien généré. Par défaut, le texte suivant est utilisé : \"Données de ma commune sur le site de l'observatoire de la qualité de l'air en Auvergne-Rhône-Alpes\".
 		</li>
 		<li>
 			<code>debug</code> : utilisé sans valeur, les données bruttes sont renvoyées. Ce paramètre prime sur tous les autres.
@@ -216,12 +252,12 @@ class admin_page__general {
 <ul>
 	<li>
 		<code>[spaa]</code><br>
-		=> equivalent à <code>[spaa indicateur=\"indice\" echeance=\"n\" parametre=\"global_indice\"]</code>
+		=> equivalent à <code>[spaa indicateur=\"indice\" echeance=\"n\" polluant=\"global\" parametre=\"widget\"]</code>
 	</li>
 
 	<li>
 		<code>[spaa echeance=\"n+1\" parametre=\"PM2.5\"]</code><br>
-		=>equivalent à <code>[spaa indicateur=\"indice\" echeance=\"n+1\" parametre=\"PM2.5\"]</code>
+		=>equivalent à <code>[spaa indicateur=\"indice\" echeance=\"n+1\" polluant=\"PM2.5\" parametre=\"widget\"]</code>
 	</li>
 
 	<li>
@@ -231,6 +267,18 @@ class admin_page__general {
 
 	<li>
 		<code>[spaa indicateur=\"vigilance\"]</code>
+	</li>
+
+	<li>
+		<code>[spaa indicateur=\"horodatage\"]</code>
+	</li>
+
+	<li>
+		<code>[spaa indicateur=\"recommandation\"]</code>
+	</li>
+
+	<li>
+		<code>[spaa indicateur=\"lien\" texte=\"Données pour ma commune\"]</code>
 	</li>
 </ul>
 </p>

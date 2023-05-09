@@ -12,21 +12,21 @@ L'utilisation se fait simplement en plaçant le shortcode suivant :
 
 Plusieurs paramètres sont disponibles afin de spécifier les données voulues :
 - `indicateur` :
-  - `horodatage` : Renvoi la date et l'heure de récupération des données.
-  - `lien` : Renvoi un lien vers les données de la commune dont le code INSEE est spécifiée dans les paramètres. A utiliser avec le paramètre : `texte`,
+  - `horodatage` : renvoi la date et l'heure de récupération des données.
+  - `lien` : renvoi un lien vers les données de la commune dont le code INSEE est spécifiée dans les paramètres. A utiliser avec le paramètre : `texte`,
   - `vigilance` : renvoi un bloc HTML détaillant les vigilances pollution. Les balises utilisées sont `<p>` s'il n'y a aucune vigilance, `<ul>` s'il y a une ou plusieurs vigilances.
   - `recommandation` : renvoi un bloc HTML détaillant les recommandations en fonction de l'indice global actuel.
-  - `indice` : renvoi différentes informations sur l'état de l'atmosphère. Par défaut : indice global. A utiliser avec les paramètres : `echeance`, `polluant` et `parametre`.
+  - `indice` : defaut : renvoi différentes informations sur l'état de l'atmosphère. A utiliser avec les paramètres : `echeance`, `polluant` et `parametre`.
 - `echeance` : uniquement avec le paramètre `indicateur=indice`.
   - `n` : défaut : valeurs de pollution pour le jour même.
   - `n+1` : valeurs de pollution pour le jour suivant.
 - `polluant` : polluant pour lequel afficher les données, uniquement avec le paramètre `indicateur=indice`.
-  - `global` : défaut : etat global de l'air.
-  - `PM2.5` : Microparticule inférieur à 2,5 micron.
-  - `PM10` : Microparticule inférieur à 10 micron.
-  - `SO2` : Dioxyde de souffre.
-  - `O3` : Ozone.
-  - `NO2` : Dioxyde d'azote.
+  - `global` : défaut : état global de l'air.
+  - `PM2.5` : microparticule inférieur à 2,5 micron.
+  - `PM10` : microparticule inférieur à 10 micron.
+  - `SO2` : dioxyde de souffre.
+  - `O3` : ozone.
+  - `NO2` : dioxyde d'azote.
 - `parametre` : uniquement avec le paramètre `indicateur=indice`.
   - `nom` : nom du polluant (par exemple "Ozone").
   - `abbreviation` : abbreviation (par exemple "03").
@@ -36,8 +36,7 @@ Plusieurs paramètres sont disponibles afin de spécifier les données voulues :
   - `image` : icône colorée représentant l'indice.
   - `widget` : defaut : code HTML contenant un ensemble d'informations sur le polluant et l'indice lié.
   - `gauge` : code HTML contenant une gauge indicant le niveau d'indice pour le polluant considéré.
-- `texte` : uniquement avec le paramètre `indicateur=lien`. Texte à afficher dans le lien généré.
-  - Par défaut, le texte suivant est utilisé : "Données de ma commune sur le site de l'observatoire de la qualité de l'air en Auvergne-Rhône-Alpes"
+- `texte` : uniquement avec le paramètre `indicateur=lien`. Texte à afficher dans le lien généré. Par défaut, le texte suivant est utilisé : "Données de ma commune sur le site de l'observatoire de la qualité de l'air en Auvergne-Rhône-Alpes"
 - `debug` : utilisé sans valeur, les données bruttes sont renvoyées. Ce paramètre prime sur tous les autres.
 
 Voici quelques exemples d'utilisation du shortcode :  
