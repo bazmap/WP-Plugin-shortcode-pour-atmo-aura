@@ -19,6 +19,8 @@ namespace plugin_spaa;
  * Version:           0.1.0
  * Author:            Arthur Bazin
  * Author URI:        https://www.arthurbazin.com
+ * Licence:           GPL2
+ * Licence URI:       https://www.gnu.org/licenses/gpl-2.0.html
  */
 
 
