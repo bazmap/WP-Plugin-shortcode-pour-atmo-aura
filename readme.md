@@ -7,6 +7,9 @@ Plugin WordPress pour récupérer et afficher les données de l'API Atmo Auvergn
 
 Pour récupérer les données, une clé d'API est nécessaire et disponible depuis [le site de l'API](https://api.atmo-aura.fr/documentation).
 
+
+## Documentation
+
 L'utilisation se fait simplement en plaçant le shortcode suivant :
 ```[spaa]```
 
@@ -57,4 +60,10 @@ Voici quelques exemples d'utilisation du shortcode :
 
 ```[spaa indicateur="lien" texte="Données pour ma commune"]``` 
 
+
+## Quelques captures d'écran
+
+![Ecran de paramétrage](doc/screenshot-1.jpg)
+![Exemple de rendu](doc/screenshot-2.jpg)
+![Exemple de mise en forme pour le rendu de la capture précédente](doc/screenshot-3jpg)
 
