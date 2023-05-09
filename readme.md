@@ -63,7 +63,7 @@ Voici quelques exemples d'utilisation du shortcode :
 
 ## Quelques captures d'écran
 
-![Ecran de paramétrage](/doc/screenshot-1.jpg)
-![Exemple de rendu](/doc/screenshot-2.jpg)
-![Exemple de mise en forme pour le rendu de la capture précédente](/doc/screenshot-3jpg)
+![Ecran de paramétrage](/doc/screenshot-1.png)
+![Exemple de rendu](/doc/screenshot-2.png)
+![Exemple de mise en forme pour le rendu de la capture précédente](/doc/screenshot-3.png)
 
