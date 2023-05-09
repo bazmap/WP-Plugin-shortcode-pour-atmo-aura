@@ -135,7 +135,8 @@ class functionalities {
 				'indicateur' => 'indice',
 				'echeance' => 'n',
 				'polluant' => 'global',
-				'parametre' => 'widget'
+				'parametre' => 'widget',
+				'texte' => 'Données de ma commune sur le site de l\'observatoire de la qualité de l\'air en Auvergne-Rhône-Alpes'
 			), 
 			$atts
 		);
@@ -179,6 +180,9 @@ class functionalities {
 				$date->setTimezone(new \DateTimeZone(wp_timezone_string()));
 
 				$data_return = $date->format("Y-m-d H:i:s");
+			}
+			else if ( $attribut['indicateur'] == 'lien' ){
+				$data_return = '<a href="https://www.atmo-auvergnerhonealpes.fr/air-commune/_/'.$this->code_insee.'/indice-atmo" target="_blank">'.$attribut['texte'].'</a>';
 			}
 			else {
 				throw new \Exception('Mauvais paramètre');

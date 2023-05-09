@@ -88,6 +88,8 @@
 .spaa.indice_widget img{
 	width: 150px;
 
+	margin: -10px 0 -15px 0px;
+
 	box-shadow: none !important;
 	border: none !important;
 }
