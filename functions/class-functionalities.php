@@ -473,7 +473,7 @@ class functionalities {
 			$data_return[$echeance]['global']['indice num'] = $elem['indice'];
 			$data_return[$echeance]['global']['indice txt'] = $this->data_definition[$elem['indice']]['qualificatif'];
 			$data_return[$echeance]['global']['concentration'] = null;
-			$data_return[$echeance]['global']['image'] = '<img src="'.$this->data_definition[$elem['indice']]['picto_url'].'">';
+			$data_return[$echeance]['global']['image'] = '<img class="picto_indice" src="'.$this->data_definition[$elem['indice']]['picto_url'].'">';
 			$data_return[$echeance]['global']['gauge'] = $this->format_data_indice_gauge($data_return[$echeance]['global']);
 			$data_return[$echeance]['global']['widget'] = $this->format_data_indice_widget($data_return[$echeance]['global']);
 
@@ -508,7 +508,7 @@ class functionalities {
 				$data_return[$echeance][$polluant]['indice num'] = $ss_indice['indice'];
 				$data_return[$echeance][$polluant]['indice txt'] = $this->data_definition[$ss_indice['indice']]['qualificatif'];
 				$data_return[$echeance][$polluant]['concentration'] = $ss_indice['concentration'];
-				$data_return[$echeance][$polluant]['image'] = '<img src="'.$this->data_definition[$ss_indice['indice']]['picto_url'].'">';
+				$data_return[$echeance][$polluant]['image'] = '<img class="picto_indice" src="'.$this->data_definition[$ss_indice['indice']]['picto_url'].'">';
 				$data_return[$echeance][$polluant]['gauge'] = $this->format_data_indice_gauge($data_return[$echeance][$polluant]);
 				$data_return[$echeance][$polluant]['widget'] = $this->format_data_indice_widget($data_return[$echeance][$polluant]);
 
@@ -532,7 +532,8 @@ class functionalities {
 	public function format_data_indice_gauge($data){
 		$data_return = 
 			"<div class=\"spaa indice_gauge\">
-				<div class=\"inner_content\">
+				<div class=\"gg_polluant\">".str_replace(", ", "<br>", $data['nom'])."</div>
+				<div class=\"conteneur_gauge\">
 					<div class=\"gauge\">
 						<div class=\"cadran\">
 							<div class=\"graduation_item\"></div>
@@ -545,14 +546,14 @@ class functionalities {
 							</div>
 							<div class=\"needle\" style=\"transform: rotate(calc( -15deg + ( {$data['indice num']} * 30deg ) ))\"></div>
 							<div class=\"cadran_centre\">
-								<div class=\"gg_indice\">{$data['indice txt']}</div>
-								<div class=\"gg_concentration\">
-								". (isset( $data['concentration'] ) ? "({$data['concentration']} µg/m3)" : '') ."
-								</div>
-								<div class=\"gg_polluant\">{$data['nom']}</div>
 							</div>
 						</div>
+						{$data['image']}
 					</div>
+				</div>
+				<div class=\"gg_indice\">{$data['indice txt']}</div>
+				<div class=\"gg_concentration\">
+				". (isset( $data['concentration'] ) ? "({$data['concentration']} µg/m3)" : '') ."
 				</div>
 			</div>"
 		;
@@ -573,7 +574,7 @@ class functionalities {
 
 		$data_return =
 			"<div class=\"spaa indice_widget indice_{$data['indice num']}\">
-				<span class=\"wgt_title\">{$data['nom']}</span>
+				<span class=\"wgt_title\">".str_replace(", ", "<br>", $data['nom'])."</span>
 				". (isset( $data['concentration'] ) ? "<span class=\"wgt_molecule\">({$data['abbreviation']})</span>" : '') ."
 				{$data['image']}
 				<span class=\"wgt_indice\">{$data['indice txt']}</span>

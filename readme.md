@@ -10,8 +10,7 @@ Pour récupérer les données, une clé d'API est nécessaire et disponible depu
 
 ## Documentation
 
-L'utilisation se fait simplement en plaçant le shortcode suivant :
-```[spaa]```
+L'utilisation se fait simplement en plaçant le shortcode suivant : ```[spaa]```
 
 Plusieurs paramètres sont disponibles afin de spécifier les données voulues :
 - `indicateur` :
