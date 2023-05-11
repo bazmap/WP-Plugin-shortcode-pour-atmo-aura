@@ -99,6 +99,7 @@ class core {
 
 		// Ajout des styles pour la page d'admin
 		add_action('admin_enqueue_scripts', array($this, 'enqueue_custom_admin_style'));
+		// Ajout des styles pour le front
 		add_action('wp_enqueue_scripts', array($this, 'enqueue_custom_front_style'));
 
 	}

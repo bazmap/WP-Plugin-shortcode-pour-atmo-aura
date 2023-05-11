@@ -13,7 +13,7 @@ namespace plugin_spaa;
  * Page d'administration principale
  * Paramètres créés :
  * 	cle_api
- * 	code_insee
+ * 	code_site
  * 	delai_peremption
  *
  * Ce fichier est appelé au sein de la classe admin
@@ -163,7 +163,7 @@ class admin_page__general {
 					<code>horodatage</code> : Renvoi la date et l'heure de récupération des données.
 				</li>
 				<li>
-					<code>lien</code> : Renvoi un lien vers les données de la commune dont le code INSEE est spécifiée dans les paramètres. A utiliser avec lesparamètre : <code>texte</code>.
+					<code>lien</code> : Renvoi un lien vers les données de la commune dont le code INSEE est spécifiée dans les paramètres. A utiliser avec le paramètre : <code>texte</code>.
 				</li>
 				<li>
 					<code>vigilance</code> : renvoi un bloc HTML détaillant les vigilances pollution. Les balises utilisées sont <code>&lt;p&gt;</code> s'il n'y a aucune vigilance (une simple phrase), <code>&lt;ul&gt;</code> et <code>&lt;li&gt;</code> s'il y a une ou plusieurs vigilances (liste de vigilance).

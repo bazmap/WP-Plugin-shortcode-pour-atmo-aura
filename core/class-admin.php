@@ -6,7 +6,7 @@ namespace plugin_spaa;
 
 
 /**
- * class-spaa_admin
+ * class-admin
  *
  * Définition des options d'administration du plugin
  *

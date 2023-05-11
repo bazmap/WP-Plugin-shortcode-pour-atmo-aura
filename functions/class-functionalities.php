@@ -3,8 +3,7 @@
 // Espace de nom du plugin
 namespace plugin_spaa;
 
-use DateTime;
-use YoastSEO_Vendor\WordProof\SDK\Support\Timestamp;
+
 
 /**
  * class-functions
@@ -99,8 +98,20 @@ class functionalities {
 
 
 		// Récupération des paramètres du plugin
-		$this->api_key = (get_option($this->parent_object->plugin_object_admin->plugin_setting_name))['cle_api'];
-		$this->code_insee = (get_option($this->parent_object->plugin_object_admin->plugin_setting_name))['code_insee'];
+		$this->api_key = 
+			isset(
+				(get_option($this->parent_object->plugin_object_admin->plugin_setting_name))['cle_api']
+			) ?
+			(get_option($this->parent_object->plugin_object_admin->plugin_setting_name))['cle_api'] :
+			''
+		;
+		$this->code_insee = 
+			isset(
+				(get_option($this->parent_object->plugin_object_admin->plugin_setting_name))['code_insee']
+			) ?
+			(get_option($this->parent_object->plugin_object_admin->plugin_setting_name))['code_insee'] :
+			''
+		;
 		$this->delai_peremption = 
 			isset(
 				(get_option($this->parent_object->plugin_object_admin->plugin_setting_name))['delai_peremption']
