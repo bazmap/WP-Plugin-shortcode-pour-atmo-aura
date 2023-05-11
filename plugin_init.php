@@ -16,7 +16,7 @@ namespace plugin_spaa;
  * Plugin Name:       Shortcode pour Atmo Auvergne-Rhône-Alpes
  * Plugin URI:        https://www.plugin.com
  * Description:       Plugin NON-OFFICIEL d'affichage des données d'Atmo Auvergne-Rhône-Alpes au sein de WordPress.
- * Version:           0.1.0
+ * Version:           1.0.0-beta
  * Author:            Arthur Bazin
  * Author URI:        https://www.arthurbazin.com
  * Licence:           GPL2
