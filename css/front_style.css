@@ -86,9 +86,10 @@
 }
 
 .spaa.indice_widget img.picto_indice{
-	width: 150px;
+	width: 100%;
+	max-width: 100px;
 
-	margin: -10px 0 -15px 0px;
+	margin: 0 0 -5px 0;
 
 	box-shadow: none !important;
 	border: none !important;
@@ -125,7 +126,7 @@
 .spaa.indice_gauge{
 	position: relative;
 
-	min-width: 250px;
+	min-width: 100px;
 	max-width: 400px;
 	
 	height: max-content;

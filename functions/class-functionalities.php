@@ -479,7 +479,7 @@ class functionalities {
 
 
 			// Valeurs globales
-			$data_return[$echeance]['global']['nom'] = 'Indice global';
+			$data_return[$echeance]['global']['nom'] = 'Qualité globale de l\'air';
 			$data_return[$echeance]['global']['abbreviation'] = null;
 			$data_return[$echeance]['global']['indice num'] = $elem['indice'];
 			$data_return[$echeance]['global']['indice txt'] = $this->data_definition[$elem['indice']]['qualificatif'];
