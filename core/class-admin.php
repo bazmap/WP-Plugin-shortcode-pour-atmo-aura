@@ -91,9 +91,9 @@ class admin {
 				or 'options.php' === $GLOBALS['pagenow']
 			)
 		) {
-			add_action( 'admin_init', array($this, 'init_plugin_setting'));
+			\add_action( 'admin_init', array($this, 'init_plugin_setting'));
 		}
-		add_action('admin_menu', array($this, 'init_pages'));
+		\add_action('admin_menu', array($this, 'init_pages'));
 	}
 
 
@@ -108,7 +108,7 @@ class admin {
 	 */
 	function init_plugin_setting(){
 
-		register_setting( 
+		\register_setting( 
 			$this->plugin_setting_group,                   // Groupe
 			$this->plugin_setting_name,                    // Nom
 			array($this, 'settings_sanitizer')             // Fonction de nettoyage
@@ -126,7 +126,7 @@ class admin {
 	 */
 	public function init_pages() {
 
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'core/class-admin_page__general.php';
+		require_once \plugin_dir_path( dirname( __FILE__ ) ) . 'core/class-admin_page__general.php';
 
 		$class_admin_page_general = new admin_page__general($this);
 
@@ -144,7 +144,7 @@ class admin {
 		$var_type = gettype($settings);
 
 		if ( $var_type == 'string' ) {
-			$return_settings = sanitize_textarea_field($settings);
+			$return_settings = \sanitize_textarea_field($settings);
 		}
 
 		elseif ( in_array($var_type, array('integer', 'double')) ) {
@@ -157,7 +157,7 @@ class admin {
 
 		elseif ( $var_type == 'array' ) {
 			foreach ($settings as $key => $value) {
-				$return_settings[$key] = sanitize_textarea_field($value);
+				$return_settings[$key] = \sanitize_textarea_field($value);
 			}
 		}
 

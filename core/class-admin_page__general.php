@@ -89,7 +89,7 @@ class admin_page__general {
 	 */
 	public function init_page() {
 
-		$page_option = add_submenu_page(
+		$page_option = \add_submenu_page(
 			"options-general.php",                                                   // Page parente (dans le menu)
 			$this->page_name,                                                        // Titre de la page
 			$this->parent_object->parent_object->get_plugin_name(),                  // Titre du menu
@@ -100,7 +100,7 @@ class admin_page__general {
 		);
 
 		// Ajout d'une aide
-		add_action( 'load-' . $page_option, array($this, 'display_help') );
+		\add_action( 'load-' . $page_option, array($this, 'display_help') );
 
 	}
 
@@ -143,7 +143,7 @@ class admin_page__general {
 	function display_help() {
 
 		// Récupération de la page courante
-		$screen = get_current_screen();
+		$screen = \get_current_screen();
 
 		// Ajout de l'onglet d'aide
 		$screen->add_help_tab(
@@ -302,7 +302,7 @@ class admin_page__general {
 	function init_page_content(){
 
 		// Ajout d'une section
-		add_settings_section( 
+		\add_settings_section( 
 			'setting_'.($this->page_slug).'_section_parametre',                 // ID de la section
 			'Paramètres',                                                       // Titre
 			'',                                                                 // Fonction callback
@@ -316,7 +316,7 @@ class admin_page__general {
 
 
 		// Ajout d'un paramètre
-		add_settings_field( 
+		\add_settings_field( 
 			'setting_'.($this->page_slug).'_setting_cle_api',              // ID du champ
 			'Clé d\'API',                                                  // Titre
 			array($this, 'display_setting_cle_api'),                       // Fonction callback
@@ -329,7 +329,7 @@ class admin_page__general {
 
 
 		// Ajout d'un paramètre
-		add_settings_field( 
+		\add_settings_field( 
 			'setting_'.($this->page_slug).'_setting_code_insee',          // ID du champ
 			'Code INSEE de la commune',                                   // Titre
 			array($this, 'display_setting_code_insee'),                                 // Fonction callback
@@ -342,7 +342,7 @@ class admin_page__general {
 
 
 		// Ajout d'un paramètre
-		add_settings_field( 
+		\add_settings_field( 
 			'setting_'.($this->page_slug).'_setting_delai_peremption',          // ID du champ
 			'Délais de péremption des données (en seconde)',                                   // Titre
 			array($this, 'display_setting_delai_peremption'),                                 // Fonction callback
@@ -373,7 +373,7 @@ class admin_page__general {
 		$label = ! empty( $args['label_for'] ) ? $args['label_for'] : '';
 
 		?>
-			<input id="<?php echo esc_attr( $label ); ?>" class="regular-text" type="text" name="<?php echo esc_attr( $setting_name.'['.$sub_setting_name.']' ); ?>" value="<?php echo esc_attr( $value ); ?>"><br/>
+			<input id="<?php echo \esc_attr( $label ); ?>" class="regular-text" type="text" name="<?php echo \esc_attr( $setting_name.'['.$sub_setting_name.']' ); ?>" value="<?php echo \esc_attr( $value ); ?>"><br/>
 			<p>La clé d'API peut être récupérée sur le site d'Atmo Auvergne Rhône Alpes : <a href="http://api.atmo-aura.fr/documentation" target="_blank">https://api.atmo-aura.fr/documentation</a></p>
 		<?php
 	}
@@ -391,12 +391,12 @@ class admin_page__general {
 		$setting_name = $this->parent_object->plugin_setting_name;
 		$sub_setting_name = 'code_insee';
 
-		$setting = get_option( $setting_name );
+		$setting = \get_option( $setting_name );
 		$value = ! empty( $setting[$sub_setting_name] ) ? $setting[$sub_setting_name] : '';
 		$label = ! empty( $args['label_for'] ) ? $args['label_for'] : '';
 
 		?>
-			<input id="<?php echo esc_attr( $label ); ?>" class="regular-text" type="text" name="<?php echo esc_attr( $setting_name.'['.$sub_setting_name.']' ); ?>" value="<?php echo esc_attr( $value ); ?>"><br/>
+			<input id="<?php echo \esc_attr( $label ); ?>" class="regular-text" type="text" name="<?php echo \esc_attr( $setting_name.'['.$sub_setting_name.']' ); ?>" value="<?php echo \esc_attr( $value ); ?>"><br/>
 			<p>Le code INSEE est composé de 5 chiffres</p>
 		<?php
 	}
@@ -414,12 +414,12 @@ class admin_page__general {
 		$setting_name = $this->parent_object->plugin_setting_name;
 		$sub_setting_name = 'delai_peremption';
 
-		$setting = get_option( $setting_name );
+		$setting = \get_option( $setting_name );
 		$value = ! empty( $setting[$sub_setting_name] ) ? $setting[$sub_setting_name] : '';
 		$label = ! empty( $args['label_for'] ) ? $args['label_for'] : '';
 
 		?>
-			<input id="<?php echo esc_attr( $label ); ?>" class="regular-text" type="number" name="<?php echo esc_attr( $setting_name.'['.$sub_setting_name.']' ); ?>" value="<?php echo esc_attr( $value ); ?>"><br/>
+			<input id="<?php echo \esc_attr( $label ); ?>" class="regular-text" type="number" name="<?php echo \esc_attr( $setting_name.'['.$sub_setting_name.']' ); ?>" value="<?php echo \esc_attr( $value ); ?>"><br/>
 			<p>Le délais de péremption est par défaut de 3h (10800 secondes). Au delà, l'API est recontactée pour actualiser les données.</p>
 		<?php
 	}

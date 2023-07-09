@@ -98,9 +98,9 @@ class core {
 		$this->plugin_version = $init_plugin_version;
 
 		// Ajout des styles pour la page d'admin
-		add_action('admin_enqueue_scripts', array($this, 'enqueue_custom_admin_style'));
+		\add_action('admin_enqueue_scripts', array($this, 'enqueue_custom_admin_style'));
 		// Ajout des styles pour le front
-		add_action('wp_enqueue_scripts', array($this, 'enqueue_custom_front_style'));
+		\add_action('wp_enqueue_scripts', array($this, 'enqueue_custom_front_style'));
 
 	}
 
@@ -114,13 +114,13 @@ class core {
 	public function run() {
 		
 		// Menu d'administration
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'core/class-admin.php';
+		require_once \plugin_dir_path( dirname( __FILE__ ) ) . 'core/class-admin.php';
 
 		$this->plugin_object_admin = new admin($this);
 
 
 		// Fonctionnalités
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'functions/class-functionalities.php';
+		require_once \plugin_dir_path( dirname( __FILE__ ) ) . 'functions/class-functionalities.php';
 
 		new functionalities($this);
 
@@ -137,14 +137,14 @@ class core {
 
 		// Uniquement sur la page de paramètre du plugin
 		if ( $hook === 'settings_page_spaa_general' ) {
-			wp_register_style( 
+			\wp_register_style( 
 				'spaa_admin_css', 
-				plugin_dir_url( dirname( __FILE__ ) ) . 'css/admin_style.css', 
+				\plugin_dir_url( dirname( __FILE__ ) ) . 'css/admin_style.css', 
 				false, 
 				'1.0.0' 
 			);
 
-			wp_enqueue_style( 'spaa_admin_css' );
+			\wp_enqueue_style( 'spaa_admin_css' );
 		}
 	}
 
@@ -157,14 +157,14 @@ class core {
 	 */
 	function enqueue_custom_front_style() {
 
-		wp_register_style( 
+		\wp_register_style( 
 			'spaa_front_css', 
-			plugin_dir_url( dirname( __FILE__ ) ) . 'css/front_style.css', 
+			\plugin_dir_url( dirname( __FILE__ ) ) . 'css/front_style.css', 
 			false, 
 			'1.0.0' 
 		);
 
-		wp_enqueue_style( 'spaa_front_css' );
+		\wp_enqueue_style( 'spaa_front_css' );
 	}
 
 

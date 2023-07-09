@@ -141,7 +141,7 @@ class functionalities {
 
 
 		// Récupération des attributs
-		$attribut = shortcode_atts(
+		$attribut = \shortcode_atts(
 			array(
 				'indicateur' => 'indice',
 				'echeance' => 'n',
@@ -236,7 +236,7 @@ class functionalities {
 	public function get_data($option_name, $delai_peremption, $api_key, $code_insee){
 
 		// Récupération des données stockées
-		$data = get_option($option_name);
+		$data = \get_option($option_name);
 
 		$current_timestamp = new \DateTime('now', new \DateTimeZone('UTC'));
 
@@ -269,7 +269,7 @@ class functionalities {
 			$data['timestamp_data'] = $current_timestamp->getTimestamp();
 
 			// Sauvegarde des données	
-			update_option($option_name, $data);
+			\update_option($option_name, $data);
 
 		}
 
@@ -319,11 +319,11 @@ class functionalities {
 		$data = array();
 		
 		foreach ($api as $key => $value){
-			$response[$key] = wp_remote_get($value['url'], $value['parameter']);
+			$response[$key] = \wp_remote_get($value['url'], $value['parameter']);
 
 			// Traitement de la réponse
 			if(
-				!is_wp_error($response[$key]) 
+				!\is_wp_error($response[$key]) 
 				&& (
 					$response[$key]['response']['code'] == 200 
 					|| $response[$key]['response']['code'] == 201
@@ -331,7 +331,7 @@ class functionalities {
 			) {
 				$data[$key] = array();
 
-				$data[$key] = json_decode($response[$key]['body'], TRUE);
+				$data[$key] = \json_decode($response[$key]['body'], TRUE);
 
 			}
 			else {
